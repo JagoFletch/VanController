@@ -1,83 +1,100 @@
 import React, { useState, useEffect } from 'react';
+import '../styles/global.css';
+import HomeScreen from '../screens/HomeScreen';
+import SetupScreen from '../screens/SetupScreen';
+import SettingsScreen from '../screens/SettingsScreen';
+
+const { remote, ipcRenderer } = window.require('electron');
 
 const App = () => {
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [isFirstUse, setIsFirstUse] = useState(true);
+  const [isFirstUse, setIsFirstUse] = useState(false);
+  const [setupQuestions, setSetupQuestions] = useState([]);
+  const [userConfig, setUserConfig] = useState({});
+  const [extensions, setExtensions] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentScreen, setCurrentScreen] = useState('home'); // 'home', 'settings'
+
+  // Load application data
+  const loadAppData = async () => {
+    setIsLoading(true);
+
+    try {
+      // Check if this is the first use
+      const setupCompleted = await ipcRenderer.invoke('is-setup-completed');
+      setIsFirstUse(!setupCompleted);
+
+      // Load setup questions
+      const questions = await ipcRenderer.invoke('get-setup-questions');
+      setSetupQuestions(questions);
+
+      // If setup is completed, load user config
+      if (setupCompleted) {
+        const config = await ipcRenderer.invoke('get-user-config');
+        setUserConfig(config || {});
+      }
+
+      // Load all extensions
+      const loadedExtensions = await ipcRenderer.invoke('get-extensions');
+      setExtensions(loadedExtensions || {});
+    } catch (error) {
+      console.error('Error initializing app:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
-    // Check if this is the first use
-    // In a real app, we would check local storage or a config file
-    // For now, we'll just simulate it
-    setTimeout(() => {
-      setIsFirstUse(false);
-    }, 5000);
-
-    return () => {
-      clearInterval(timer);
-    };
+    loadAppData();
   }, []);
 
-  if (isFirstUse) {
-    return <FirstUseSetup onComplete={() => setIsFirstUse(false)} />;
+  const handleSetupComplete = async (config) => {
+    const success = await ipcRenderer.invoke('save-user-config', config);
+    
+    if (success) {
+      setUserConfig(config);
+      setIsFirstUse(false);
+    } else {
+      alert('Failed to save configuration. Please try again.');
+    }
+  };
+
+  const handleNavigation = (screen) => {
+    setCurrentScreen(screen);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="loading-screen">
+        <h2>Loading Van Controller...</h2>
+      </div>
+    );
   }
 
-  return (
-    <div style={{ padding: '20px' }}>
-      <h1>Van Controller</h1>
-      <div>
-        <h2>Current Time</h2>
-        <p>{currentTime.toLocaleTimeString()}</p>
-        <p>{currentTime.toLocaleDateString()}</p>
-      </div>
-      <div>
-        <h2>Extensions</h2>
-        <p>No extensions installed yet.</p>
-      </div>
-    </div>
-  );
-};
+  if (isFirstUse) {
+    return <SetupScreen 
+      questions={setupQuestions} 
+      onComplete={handleSetupComplete} 
+    />;
+  }
 
-// First-use setup component
-const FirstUseSetup = ({ onComplete }) => {
-  return (
-    <div style={{ padding: '20px' }}>
-      <h1>Welcome to Van Controller</h1>
-      <p>Let's set up your system.</p>
-      <div style={{ marginTop: '20px' }}>
-        <h2>Vehicle Information</h2>
-        <div>
-          <label>Vehicle Make: </label>
-          <input type="text" />
-        </div>
-        <div style={{ marginTop: '10px' }}>
-          <label>Vehicle Model: </label>
-          <input type="text" />
-        </div>
-        <div style={{ marginTop: '10px' }}>
-          <label>Year: </label>
-          <input type="number" />
-        </div>
-      </div>
-      <button 
-        style={{ 
-          marginTop: '20px',
-          padding: '10px 20px',
-          backgroundColor: '#4CAF50',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer'
-        }}
-        onClick={onComplete}
-      >
-        Complete Setup
-      </button>
-    </div>
-  );
+  switch (currentScreen) {
+    case 'settings':
+      return (
+        <SettingsScreen 
+          extensions={extensions}
+          onBack={() => handleNavigation('home')}
+          onReload={loadAppData}
+        />
+      );
+    case 'home':
+    default:
+      return (
+        <HomeScreen 
+          extensions={extensions}
+          onSettings={() => handleNavigation('settings')}
+        />
+      );
+  }
 };
 
 export default App;

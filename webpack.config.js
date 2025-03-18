@@ -24,8 +24,8 @@ module.exports = {
         use: ['style-loader', 'css-loader']
       },
       {
-        test: /\.(png|svg|jpg|gif)$/,
-        use: ['file-loader']
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
       }
     ]
   },
@@ -41,6 +41,7 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'dist')
     },
-    port: 3000
+    port: 3000,
+    hot: true
   }
 };

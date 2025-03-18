@@ -1,0 +1,100 @@
+/* Touch-optimized styles */
+
+:root {
+    /* Increase touch target sizes for small screens */
+    --button-size: 44px;
+    --slider-height: 30px;
+    --checkbox-size: 24px;
+  }
+  
+  /* Make buttons larger and easier to tap */
+  button {
+    min-height: var(--button-size);
+    min-width: var(--button-size);
+    padding: 10px 15px;
+    font-size: 1rem;
+    margin: 5px;
+    border-radius: 8px;
+  }
+  
+  /* Make form controls larger */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  select {
+    height: var(--button-size);
+    font-size: 1rem;
+    padding: 0 10px;
+    margin: 5px 0;
+  }
+  
+  /* Range slider styling for touch */
+  input[type="range"] {
+    height: var(--slider-height);
+    -webkit-appearance: none;
+    width: 100%;
+    background: #333;
+    border-radius: 15px;
+    margin: 10px 0;
+  }
+  
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: var(--slider-height);
+    width: var(--slider-height);
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    margin-top: 0px;
+  }
+  
+  /* Radio and checkbox styling for touch */
+  input[type="radio"],
+  input[type="checkbox"] {
+    height: var(--checkbox-size);
+    width: var(--checkbox-size);
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  
+  /* Make cards easier to tap */
+  .card {
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+  }
+  
+  /* Improve spacing for touch */
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  /* Disable text selection for better touch experience */
+  * {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Allow text selection in input fields */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  textarea {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  
+  /* Scrolling containers */
+  .scrollable {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    max-height: 400px;
+    padding-right: 5px;
+  }
