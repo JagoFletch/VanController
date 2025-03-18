@@ -1,0 +1,2598 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+<additional_info>
+
+</additional_info>
+
+</file_summary>
+
+<directory_structure>
+assets/
+  icon.svg
+config/
+  setup-questions.json
+docs/
+  extension-development.md
+scripts/
+  install.sh
+src/
+  core/
+    utils/
+      logger.js
+    extensionManager.js
+    setupManager.js
+  extensions/
+    gpio-control/
+      index.js
+    system-info/
+      index.js
+  ui/
+    components/
+      Button.js
+      Card.js
+      Clock.js
+      ExtensionCard.js
+      ThemeSelector.js
+    contexts/
+      ThemeContext.js
+    screens/
+      HomeScreen.js
+      SettingsScreen.js
+      SetupScreen.js
+    styles/
+      global.css
+      themes.js
+      touch.css
+    App.js
+    index.html
+    index.js
+  main.js
+.babelrc
+.gitignore
+package.json
+README.md
+webpack.config.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="assets/icon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#4CAF50" rx="50" ry="50"/>
+  <path d="M 100 200 L 150 120 L 362 120 L 412 200 L 412 350 L 100 350 Z" fill="#333" />
+  <circle cx="150" cy="350" r="40" fill="#666" />
+  <circle cx="150" cy="350" r="30" fill="#333" />
+  <circle cx="362" cy="350" r="40" fill="#666" />
+  <circle cx="362" cy="350" r="30" fill="#333" />
+  <rect x="200" y="180" width="112" height="70" fill="#87CEEB" rx="10" ry="10" />
+  <rect x="130" y="230" width="40" height="30" fill="#87CEEB" rx="5" ry="5" />
+  <rect x="342" y="230" width="40" height="30" fill="#87CEEB" rx="5" ry="5" />
+  <path d="M 100 200 L 412 200" stroke="#444" stroke-width="10" fill="none" />
+  <text x="256" y="420" font-family="Arial" font-size="40" text-anchor="middle" fill="white">VanController</text>
+</svg>
+</file>
+
+<file path="config/setup-questions.json">
+{
+    "questions": [
+      {
+        "id": "vehicleMake",
+        "label": "Vehicle Make",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "vehicleModel",
+        "label": "Vehicle Model",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "vehicleYear",
+        "label": "Year",
+        "type": "number",
+        "min": 1950,
+        "max": 2030,
+        "required": true
+      },
+      {
+        "id": "batteryType",
+        "label": "Main Battery Type",
+        "type": "select",
+        "options": [
+          { "value": "leadAcid", "label": "Lead Acid" },
+          { "value": "agm", "label": "AGM" },
+          { "value": "lithium", "label": "Lithium" },
+          { "value": "other", "label": "Other" }
+        ],
+        "required": true
+      },
+      {
+        "id": "solarInstalled",
+        "label": "Do you have solar panels installed?",
+        "type": "boolean",
+        "required": true
+      }
+    ]
+  }
+</file>
+
+<file path="docs/extension-development.md">
+# VanController Extension Development Guide
+
+This guide explains how to create custom extensions for VanController. Extensions allow you to add new functionality to the VanController system without modifying the core application.
+
+## Extension Structure
+
+Each extension should be in its own directory with the following structure:
+
+my-extension/
+├── index.js        # Main extension entry point (required)
+├── components/     # React components (optional)
+├── utils/          # Utility functions (optional)
+├── assets/         # Images, icons, etc. (optional)
+└── README.md       # Documentation (optional but recommended)
+
+## Creating an Extension
+
+### Step 1: Create the Extension Directory
+
+Create a new directory for your extension:
+
+```bash
+mkdir -p my-extension
+Step 2: Create the Extension Entry Point
+Create an index.js file in your extension directory:
+import React from 'react';
+
+// This is your main extension component
+const MyExtension = () => {
+  return (
+    <div>
+      <h2>My Extension</h2>
+      <p>This is a custom extension for VanController.</p>
+      
+      {/* Add your extension UI elements here */}
+    </div>
+  );
+};
+
+// Export the extension properties
+module.exports = {
+  name: 'My Extension',           // Display name of your extension
+  description: 'Description of what your extension does',
+  component: MyExtension,         // The React component to render
+  version: '1.0.0',               // Version string
+  author: 'Your Name'             // Author name
+};
+Step 3: Testing Your Extension
+During development, you can test your extension by placing it in the src/extensions directory of the VanController project.
+Step 4: Packaging Your Extension
+To distribute your extension, simply zip the entire extension directory. Users can install your extension through the VanController settings panel.
+Extension API
+React Props
+Your extension component will not receive any props by default. If your extension needs to interact with the system, you can use the provided APIs.
+System APIs
+VanController provides APIs for extensions to interact with the system:
+Hardware Communication
+To interact with hardware (GPIO, I2C, etc.), you can use the Node.js modules provided by Electron:const { remote } = window.require('electron');
+const fs = remote.require('fs');
+const { exec } = remote.require('child_process');
+
+// Example: Read CPU temperature
+const readCpuTemp = () => {
+  return new Promise((resolve, reject) => {
+    exec('cat /sys/class/thermal/thermal_zone0/temp', (error, stdout) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      const temp = parseInt(stdout) / 1000;
+      resolve(temp);
+    });
+  });
+};
+Persistent Storage
+For saving extension settings or data:
+const { remote } = window.require('electron');
+const path = remote.require('path');
+const fs = remote.require('fs');
+const app = remote.app;
+
+// Example: Save extension settings
+const saveSettings = (settings) => {
+  const dataDir = path.join(app.getPath('userData'), 'extensions', 'my-extension');
+  
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+  
+  const filePath = path.join(dataDir, 'settings.json');
+  fs.writeFileSync(filePath, JSON.stringify(settings, null, 2));
+};
+
+// Example: Load extension settings
+const loadSettings = () => {
+  const filePath = path.join(app.getPath('userData'), 'extensions', 'my-extension', 'settings.json');
+  
+  if (fs.existsSync(filePath)) {
+    const data = fs.readFileSync(filePath, 'utf8');
+    return JSON.parse(data);
+  }
+  
+  return {}; // Default empty settings
+};
+User Interface Guidelines
+To maintain a consistent user experience, please follow these guidelines:
+
+Use the built-in styles: Utilize the VanController's color scheme and styling.
+Support touch interfaces: Make interactive elements at least 44×44 pixels in size.
+Responsive design: Your extension should adapt to different screen sizes.
+Dark theme: Design your extension with a dark theme that matches the VanController UI.
+Error handling: Handle errors gracefully and provide user feedback.
+
+Example Extensions
+Check out the following extensions for reference:
+
+Temperature Monitor
+Battery Monitor
+Lighting Control
+System Info
+
+These examples demonstrate best practices for extension development.
+Submitting Extensions
+To share your extension with the VanController community, you can:
+
+Host it on your own GitHub repository
+Submit a pull request to the VanController extensions repository
+
+Make sure to include a detailed README.md file explaining what your extension does and how to use it.
+## Improving the Main Entry Point
+
+Let's enhance the main.js file to handle hardware access for extensions:
+
+```javascript
+const { app, BrowserWindow, ipcMain } = require('electron');
+const path = require('path');
+const isDev = require('electron-is-dev');
+const { initialize, enable } = require('@electron/remote/main');
+const fs = require('fs');
+const { exec } = require('child_process');
+
+// Import managers
+const extensionManager = require('./core/extensionManager');
+const setupManager = require('./core/setupManager');
+const logger = require('./core/utils/logger');
+
+// Initialize @electron/remote
+initialize();
+
+let mainWindow;
+
+function createWindow() {
+  logger.info('Creating main window');
+  
+  // Create the browser window
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 480, // Common resolution for Raspberry Pi touch screens
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
+    },
+    fullscreen: !isDev, // Fullscreen in production (Kiosk mode)
+    autoHideMenuBar: !isDev, // Hide menu bar in production
+    backgroundColor: '#121212', // Dark background color to match the UI
+    show: false // Don't show until ready
+  });
+
+  enable(mainWindow.webContents);
+
+  // Load the index.html
+  mainWindow.loadURL(
+    isDev
+      ? 'http://localhost:3000'
+      : `file://${path.join(__dirname, '../dist/index.html')}`
+  );
+
+  // Open the DevTools in development mode
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
+  
+  // Show window when ready
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
+  
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+  
+  // Handle the window being minimized (important for kiosk applications)
+  mainWindow.on('minimize', (event) => {
+    if (!isDev) {
+      event.preventDefault();
+      mainWindow.restore();
+    }
+  });
+  
+  logger.info('Main window created');
+}
+
+// Check if another instance is already running
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  logger.info('Another instance is already running, quitting...');
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    // Focus the main window if a second instance tries to launch
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+
+  // Create window when Electron is ready
+  app.whenReady().then(() => {
+    createWindow();
+    
+    // Set up IPC handlers
+    setupIpcHandlers();
+  });
+}
+
+// Quit when all windows are closed, except on macOS
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    logger.info('All windows closed, quitting application');
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+
+// Set up IPC handlers for communication with the renderer process
+function setupIpcHandlers() {
+  // Extension management
+  ipcMain.handle('get-extensions', () => {
+    return extensionManager.getExtensions();
+  });
+  
+  ipcMain.handle('install-extension', (event, sourcePath) => {
+    return extensionManager.installExtension(sourcePath);
+  });
+  
+  ipcMain.handle('uninstall-extension', (event, extensionName) => {
+    return extensionManager.uninstallExtension(extensionName);
+  });
+  
+  // Setup management
+  ipcMain.handle('get-setup-questions', () => {
+    return setupManager.getSetupQuestions();
+  });
+  
+  ipcMain.handle('save-user-config', (event, config) => {
+    return setupManager.saveUserConfig(config);
+  });
+  
+  ipcMain.handle('get-user-config', () => {
+    return setupManager.getUserConfig();
+  });
+  
+  ipcMain.handle('is-setup-completed', () => {
+    return setupManager.isSetupCompleted();
+  });
+  
+  ipcMain.handle('reset-setup', () => {
+    return setupManager.resetSetup();
+  });
+  
+  // System information
+  ipcMain.handle('get-system-info', async () => {
+    // This should only work on Linux (Raspberry Pi)
+    if (process.platform !== 'linux') {
+      return {
+        cpuTemp: 0,
+        cpuUsage: 0,
+        memoryUsage: 0,
+        totalMemory: 0,
+        uptime: 0,
+        diskUsage: 0,
+        totalDisk: 0
+      };
+    }
+    
+    try {
+      // Get CPU temperature
+      const cpuTemp = await new Promise((resolve, reject) => {
+        exec('cat /sys/class/thermal/thermal_zone0/temp', (error, stdout) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          const temp = parseInt(stdout) / 1000;
+          resolve(temp);
+        });
+      });
+      
+      // Get CPU usage
+      const cpuUsage = await new Promise((resolve, reject) => {
+        exec("top -bn1 | grep 'Cpu(s)' | sed 's/.*, *\\([0-9.]*\\)%* id.*/\\1/' | awk '{print 100 - $1}'", (error, stdout) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve(parseFloat(stdout));
+        });
+      });
+      
+      // Get memory info
+      const memInfo = await new Promise((resolve, reject) => {
+        exec("free -m | grep Mem", (error, stdout) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          const parts = stdout.split(/\s+/);
+          resolve({
+            total: parseInt(parts[1]),
+            used: parseInt(parts[2])
+          });
+        });
+      });
+      
+      // Get uptime
+      const uptime = await new Promise((resolve, reject) => {
+        exec("cat /proc/uptime", (error, stdout) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          const uptimeSeconds = parseFloat(stdout.split(' ')[0]);
+          resolve(uptimeSeconds / 3600); // Convert to hours
+        });
+      });
+      
+      // Get disk usage
+      const diskUsage = await new Promise((resolve, reject) => {
+        exec("df -h / | tail -1", (error, stdout) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          const parts = stdout.split(/\s+/);
+          resolve({
+            total: parseFloat(parts[1].replace('G', '')),
+            used: parseFloat(parts[2].replace('G', ''))
+          });
+        });
+      });
+      
+      return {
+        cpuTemp,
+        cpuUsage,
+        memoryUsage: memInfo.used,
+        totalMemory: memInfo.total,
+        uptime,
+        diskUsage: diskUsage.used,
+        totalDisk: diskUsage.total
+      };
+    } catch (error) {
+      logger.error(`Error getting system info: ${error}`);
+      return {
+        cpuTemp: 0,
+        cpuUsage: 0,
+        memoryUsage: 0,
+        totalMemory: 0,
+        uptime: 0,
+        diskUsage: 0,
+        totalDisk: 0
+      };
+    }
+  });
+  
+  // GPIO handling (for Raspberry Pi hardware access)
+  ipcMain.handle('gpio-access', async (event, { pin, mode, value }) => {
+    // This should only work on Linux (Raspberry Pi)
+    if (process.platform !== 'linux') {
+      return { success: false, error: 'GPIO access only available on Raspberry Pi' };
+    }
+    
+    try {
+      // Example using command line for GPIO access
+      // In a production app, you would use a proper GPIO library
+      if (mode === 'read') {
+        const result = await new Promise((resolve, reject) => {
+          exec(`gpio -g read ${pin}`, (error, stdout) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+            resolve(parseInt(stdout.trim()));
+          });
+        });
+        return { success: true, value: result };
+      } else if (mode === 'write') {
+        await new Promise((resolve, reject) => {
+          exec(`gpio -g mode ${pin} out && gpio -g write ${pin} ${value}`, (error) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+            resolve();
+          });
+        });
+        return { success: true };
+      }
+      
+      return { success: false, error: 'Invalid GPIO mode' };
+    } catch (error) {
+      logger.error(`Error accessing GPIO: ${error}`);
+      return { success: false, error: error.message };
+    }
+  });
+  
+  logger.info('IPC handlers set up');
+}
+</file>
+
+<file path="src/core/utils/logger.js">
+const fs = require('fs');
+const path = require('path');
+const { app } = require('electron');
+
+class Logger {
+  constructor() {
+    this.logDir = path.join(app.getPath('userData'), 'logs');
+    this.logFile = path.join(this.logDir, 'app.log');
+    
+    // Create logs directory if it doesn't exist
+    if (!fs.existsSync(this.logDir)) {
+      fs.mkdirSync(this.logDir, { recursive: true });
+    }
+  }
+
+  _formatMessage(level, message) {
+    const timestamp = new Date().toISOString();
+    return `[${timestamp}] [${level}] ${message}\n`;
+  }
+
+  _write(level, message) {
+    const formattedMessage = this._formatMessage(level, message);
+    
+    // Log to console
+    console.log(formattedMessage);
+    
+    // Log to file
+    fs.appendFileSync(this.logFile, formattedMessage);
+  }
+
+  info(message) {
+    this._write('INFO', message);
+  }
+
+  warn(message) {
+    this._write('WARN', message);
+  }
+
+  error(message) {
+    this._write('ERROR', message);
+  }
+
+  debug(message) {
+    this._write('DEBUG', message);
+  }
+}
+
+module.exports = new Logger();
+</file>
+
+<file path="src/core/extensionManager.js">
+const fs = require('fs');
+const path = require('path');
+const { app } = require('electron');
+const logger = require('./utils/logger');
+
+class ExtensionManager {
+  constructor() {
+    this.extensions = {};
+    this.extensionsDir = path.join(__dirname, '../extensions');
+    this.userExtensionsDir = path.join(app.getPath('userData'), 'extensions');
+    
+    // Create user extensions directory if it doesn't exist
+    if (!fs.existsSync(this.userExtensionsDir)) {
+      fs.mkdirSync(this.userExtensionsDir, { recursive: true });
+    }
+  }
+
+  // Load all extensions from both the built-in and user directories
+  loadAllExtensions() {
+    logger.info('Loading all extensions');
+    this.extensions = {};
+    
+    // Load built-in extensions
+    this._loadExtensionsFromDirectory(this.extensionsDir);
+    
+    // Load user extensions
+    this._loadExtensionsFromDirectory(this.userExtensionsDir);
+    
+    logger.info(`Loaded ${Object.keys(this.extensions).length} extensions`);
+    return this.extensions;
+  }
+  
+  // Helper method to load extensions from a directory
+  _loadExtensionsFromDirectory(directory) {
+    if (!fs.existsSync(directory)) {
+      logger.warn(`Extensions directory does not exist: ${directory}`);
+      return;
+    }
+    
+    const extensionFolders = fs.readdirSync(directory, { withFileTypes: true })
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name);
+    
+    for (const folder of extensionFolders) {
+      const extensionPath = path.join(directory, folder);
+      this._loadExtension(folder, extensionPath);
+    }
+  }
+
+  // Load a specific extension by name and path
+  _loadExtension(extensionName, extensionPath) {
+    const indexPath = path.join(extensionPath, 'index.js');
+    
+    if (!fs.existsSync(indexPath)) {
+      logger.error(`Extension ${extensionName} does not have an index.js file`);
+      return null;
+    }
+
+    try {
+      // Clear cache to ensure we get the latest version
+      delete require.cache[require.resolve(indexPath)];
+      const extension = require(indexPath);
+      
+      if (!this._validateExtension(extension)) {
+        logger.error(`Extension ${extensionName} is missing required properties`);
+        return null;
+      }
+
+      this.extensions[extensionName] = {
+        ...extension,
+        path: extensionPath
+      };
+      
+      logger.info(`Loaded extension: ${extension.name} (v${extension.version})`);
+      return extension;
+    } catch (error) {
+      logger.error(`Error loading extension ${extensionName}: ${error}`);
+      return null;
+    }
+  }
+  
+  // Validate that an extension has all required properties
+  _validateExtension(extension) {
+    return (
+      extension.name && 
+      extension.description && 
+      extension.component && 
+      extension.version && 
+      extension.author
+    );
+  }
+
+  // Install a new extension from a directory
+  installExtension(sourcePath) {
+    try {
+      // Get the extension name from the directory
+      const extensionName = path.basename(sourcePath);
+      const targetPath = path.join(this.userExtensionsDir, extensionName);
+      
+      // Check if extension already exists
+      if (fs.existsSync(targetPath)) {
+        logger.warn(`Extension ${extensionName} already exists`);
+        return false;
+      }
+      
+      // Copy extension files
+      this._copyDirectory(sourcePath, targetPath);
+      
+      // Load the newly installed extension
+      const extension = this._loadExtension(extensionName, targetPath);
+      return extension !== null;
+    } catch (error) {
+      logger.error(`Error installing extension: ${error}`);
+      return false;
+    }
+  }
+  
+  // Helper method to copy a directory recursively
+  _copyDirectory(source, target) {
+    if (!fs.existsSync(target)) {
+      fs.mkdirSync(target, { recursive: true });
+    }
+    
+    const entries = fs.readdirSync(source, { withFileTypes: true });
+    
+    for (const entry of entries) {
+      const sourcePath = path.join(source, entry.name);
+      const targetPath = path.join(target, entry.name);
+      
+      if (entry.isDirectory()) {
+        this._copyDirectory(sourcePath, targetPath);
+      } else {
+        fs.copyFileSync(sourcePath, targetPath);
+      }
+    }
+  }
+
+  // Uninstall an extension
+  uninstallExtension(extensionName) {
+    const extensionPath = path.join(this.userExtensionsDir, extensionName);
+    
+    if (!fs.existsSync(extensionPath)) {
+      logger.warn(`Extension ${extensionName} does not exist`);
+      return false;
+    }
+    
+    try {
+      // Delete the extension directory
+      this._deleteDirectory(extensionPath);
+      
+      // Remove from loaded extensions
+      delete this.extensions[extensionName];
+      
+      logger.info(`Uninstalled extension: ${extensionName}`);
+      return true;
+    } catch (error) {
+      logger.error(`Error uninstalling extension ${extensionName}: ${error}`);
+      return false;
+    }
+  }
+  
+  // Helper method to delete a directory recursively
+  _deleteDirectory(directory) {
+    if (fs.existsSync(directory)) {
+      const entries = fs.readdirSync(directory, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        const entryPath = path.join(directory, entry.name);
+        
+        if (entry.isDirectory()) {
+          this._deleteDirectory(entryPath);
+        } else {
+          fs.unlinkSync(entryPath);
+        }
+      }
+      
+      fs.rmdirSync(directory);
+    }
+  }
+
+  // Get all loaded extensions
+  getExtensions() {
+    return this.extensions;
+  }
+
+  // Get a specific extension by name
+  getExtension(extensionName) {
+    return this.extensions[extensionName] || null;
+  }
+}
+
+module.exports = new ExtensionManager();
+</file>
+
+<file path="src/core/setupManager.js">
+const fs = require('fs');
+const path = require('path');
+const { app } = require('electron');
+const logger = require('./utils/logger');
+
+class SetupManager {
+  constructor() {
+    this.configDir = path.join(app.getPath('userData'), 'config');
+    this.questionsPath = path.join(__dirname, '../../config/setup-questions.json');
+    this.userConfigPath = path.join(this.configDir, 'user-config.json');
+    
+    // Create config directory if it doesn't exist
+    if (!fs.existsSync(this.configDir)) {
+      fs.mkdirSync(this.configDir, { recursive: true });
+    }
+  }
+
+  // Get setup questions
+  getSetupQuestions() {
+    try {
+      if (!fs.existsSync(this.questionsPath)) {
+        logger.error(`Setup questions file not found at ${this.questionsPath}`);
+        return [];
+      }
+      
+      const questionsData = fs.readFileSync(this.questionsPath, 'utf8');
+      return JSON.parse(questionsData).questions;
+    } catch (error) {
+      logger.error(`Error reading setup questions: ${error}`);
+      return [];
+    }
+  }
+
+  // Save user configuration
+  saveUserConfig(config) {
+    try {
+      fs.writeFileSync(this.userConfigPath, JSON.stringify(config, null, 2));
+      logger.info('User configuration saved successfully');
+      return true;
+    } catch (error) {
+      logger.error(`Error saving user config: ${error}`);
+      return false;
+    }
+  }
+
+  // Get user configuration
+  getUserConfig() {
+    try {
+      if (fs.existsSync(this.userConfigPath)) {
+        const configData = fs.readFileSync(this.userConfigPath, 'utf8');
+        return JSON.parse(configData);
+      }
+      logger.warn('User configuration file not found');
+      return null;
+    } catch (error) {
+      logger.error(`Error reading user config: ${error}`);
+      return null;
+    }
+  }
+
+  // Check if setup has been completed
+  isSetupCompleted() {
+    return fs.existsSync(this.userConfigPath);
+  }
+  
+  // Reset the setup (for debugging purposes)
+  resetSetup() {
+    try {
+      if (fs.existsSync(this.userConfigPath)) {
+        fs.unlinkSync(this.userConfigPath);
+        logger.info('Setup reset successfully');
+        return true;
+      }
+      return false;
+    } catch (error) {
+      logger.error(`Error resetting setup: ${error}`);
+      return false;
+    }
+  }
+}
+
+module.exports = new SetupManager();
+</file>
+
+<file path="src/extensions/gpio-control/index.js">
+import React, { useState, useEffect } from 'react';
+
+const { ipcRenderer } = window.require('electron');
+
+// Define available GPIO pins
+const availablePins = [
+  { pin: 17, name: 'GPIO 17' },
+  { pin: 18, name: 'GPIO 18' },
+  { pin: 27, name: 'GPIO 27' },
+  { pin: 22, name: 'GPIO 22' },
+  { pin: 23, name: 'GPIO 23' },
+  { pin: 24, name: 'GPIO 24' },
+  { pin: 25, name: 'GPIO 25' }
+];
+
+const GPIOControl = () => {
+  const [pins, setPins] = useState(availablePins.map(p => ({ ...p, state: false })));
+  const [selectedPin, setSelectedPin] = useState(null);
+  const [isReading, setIsReading] = useState(false);
+  const [readValue, setReadValue] = useState(null);
+  const [isRaspberryPi, setIsRaspberryPi] = useState(false);
+  
+  useEffect(() => {
+    // Check if running on Raspberry Pi (Linux platform)
+    const checkPlatform = async () => {
+      try {
+        const result = await ipcRenderer.invoke('gpio-access', { 
+          pin: 17, 
+          mode: 'read' 
+        });
+        
+        setIsRaspberryPi(!result.error || !result.error.includes('only available on Raspberry Pi'));
+      } catch (error) {
+        setIsRaspberryPi(false);
+      }
+    };
+    
+    checkPlatform();
+  }, []);
+  
+  // Toggle GPIO pin state
+  const togglePin = async (index) => {
+    if (!isRaspberryPi) {
+      // Just update UI in simulation mode
+      const newPins = [...pins];
+      newPins[index].state = !newPins[index].state;
+      setPins(newPins);
+      return;
+    }
+    
+    try {
+      const pin = pins[index];
+      const newState = !pin.state;
+      
+      const result = await ipcRenderer.invoke('gpio-access', { 
+        pin: pin.pin, 
+        mode: 'write',
+        value: newState ? 1 : 0
+      });
+      
+      if (result.success) {
+        const newPins = [...pins];
+        newPins[index].state = newState;
+        setPins(newPins);
+      } else {
+        console.error('Failed to toggle GPIO pin:', result.error);
+      }
+    } catch (error) {
+      console.error('Error toggling GPIO pin:', error);
+    }
+  };
+  
+  // Read GPIO pin value
+  const readPin = async () => {
+    if (!selectedPin) return;
+    
+    setIsReading(true);
+    
+    try {
+      if (!isRaspberryPi) {
+        // Simulate reading in non-Pi environments
+        setReadValue(Math.round(Math.random()));
+        setIsReading(false);
+        return;
+      }
+      
+      const result = await ipcRenderer.invoke('gpio-access', { 
+        pin: selectedPin, 
+        mode: 'read'
+      });
+      
+      if (result.success) {
+        setReadValue(result.value);
+      } else {
+        console.error('Failed to read GPIO pin:', result.error);
+        setReadValue(null);
+      }
+    } catch (error) {
+      console.error('Error reading GPIO pin:', error);
+      setReadValue(null);
+    } finally {
+      setIsReading(false);
+    }
+  };
+  
+  return (
+    <div style={{ padding: '10px' }}>
+      <h3 style={{ marginTop: 0, marginBottom: '15px' }}>GPIO Control</h3>
+      
+      {!isRaspberryPi && (
+        <div style={{ 
+          padding: '10px',
+          marginBottom: '15px',
+          backgroundColor: 'rgba(255, 215, 0, 0.2)',
+          borderRadius: '5px',
+          fontSize: '0.9rem'
+        }}>
+          Running in simulation mode. GPIO control is only available on Raspberry Pi.
+        </div>
+      )}
+      
+      <div style={{ marginBottom: '20px' }}>
+        <h4>Control Outputs</h4>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+          gap: '10px',
+          marginTop: '10px'
+        }}>
+          {pins.map((pin, index) => (
+            <div 
+              key={index}
+              style={{
+                padding: '10px',
+                backgroundColor: pin.state ? 'var(--primary)' : 'var(--surface-light)',
+                borderRadius: '5px',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s ease'
+              }}
+              onClick={() => togglePin(index)}
+            >
+              <div style={{ fontWeight: 'bold' }}>{pin.name}</div>
+              <div style={{ 
+                fontSize: '0.8rem',
+                marginTop: '5px'
+              }}>
+                State: {pin.state ? 'ON' : 'OFF'}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      <div>
+        <h4>Read Input</h4>
+        <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
+          <select 
+            value={selectedPin || ''}
+            onChange={(e) => setSelectedPin(parseInt(e.target.value))}
+            style={{ flex: 1 }}
+          >
+            <option value="">Select a GPIO pin</option>
+            {availablePins.map((pin) => (
+              <option key={pin.pin} value={pin.pin}>
+                {pin.name}
+              </option>
+            ))}
+          </select>
+          
+          <button 
+            onClick={readPin}
+            disabled={!selectedPin || isReading}
+            style={{ flex: 'none' }}
+          >
+            {isReading ? 'Reading...' : 'Read'}
+          </button>
+        </div>
+        
+        {readValue !== null && (
+          <div style={{ 
+            marginTop: '10px',
+            padding: '10px',
+            backgroundColor: 'var(--surface-light)',
+            borderRadius: '5px',
+            textAlign: 'center'
+          }}>
+            <span style={{ fontWeight: 'bold' }}>Value: </span>
+            <span>{readValue === 1 ? 'HIGH' : 'LOW'}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+module.exports = {
+  name: 'GPIO Control',
+  description: 'Control and read Raspberry Pi GPIO pins',
+  component: GPIOControl,
+  version: '1.0.0',
+  author: 'VanController Team'
+};
+</file>
+
+<file path="src/extensions/system-info/index.js">
+import React, { useState, useEffect } from 'react';
+
+const SystemInfo = () => {
+  const [systemInfo, setSystemInfo] = useState({
+    cpuTemp: 0,
+    cpuUsage: 0,
+    memoryUsage: 0,
+    totalMemory: 0,
+    uptime: 0,
+    diskUsage: 0,
+    totalDisk: 0
+  });
+  
+  // Function to fetch system information
+  // In a real extension, this would use Node.js APIs to get actual system info
+  const fetchSystemInfo = () => {
+    // This is a simulation for development purposes
+    // On a real device, you would get this data from the OS
+    
+    // Simulate CPU temperature (between 40-55°C)
+    const cpuTemp = (40 + Math.random() * 15).toFixed(1);
+    
+    // Simulate CPU usage (between 5-30%)
+    const cpuUsage = (5 + Math.random() * 25).toFixed(1);
+    
+    // Simulate memory usage (between 40-80% of 1GB)
+    const totalMemory = 1024; // MB
+    const memoryUsage = Math.floor(totalMemory * (0.4 + Math.random() * 0.4));
+    
+    // Simulate uptime in hours (between 1-168 hours / 1 week)
+    const uptime = (1 + Math.random() * 167).toFixed(1);
+    
+    // Simulate disk usage (between 20-60% of 16GB)
+    const totalDisk = 16; // GB
+    const diskUsage = (totalDisk * (0.2 + Math.random() * 0.4)).toFixed(1);
+    
+    setSystemInfo({
+      cpuTemp,
+      cpuUsage,
+      memoryUsage,
+      totalMemory,
+      uptime,
+      diskUsage,
+      totalDisk
+    });
+  };
+  
+  useEffect(() => {
+    // Fetch info immediately
+    fetchSystemInfo();
+    
+    // Then update every 5 seconds
+    const interval = setInterval(fetchSystemInfo, 5000);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  // Get color based on value (green for good, yellow for warning, red for critical)
+  const getValueColor = (value, warningThreshold, criticalThreshold) => {
+    if (value >= criticalThreshold) return '#FF4D4D';
+    if (value >= warningThreshold) return '#FFD700';
+    return '#4CAF50';
+  };
+  
+  // CPU temperature color
+  const cpuTempColor = getValueColor(systemInfo.cpuTemp, 50, 70);
+  
+  // CPU usage color
+  const cpuUsageColor = getValueColor(systemInfo.cpuUsage, 70, 90);
+  
+  // Memory usage color
+  const memoryPercentage = (systemInfo.memoryUsage / systemInfo.totalMemory) * 100;
+  const memoryColor = getValueColor(memoryPercentage, 70, 90);
+  
+  // Disk usage color
+  const diskPercentage = (systemInfo.diskUsage / systemInfo.totalDisk) * 100;
+  const diskColor = getValueColor(diskPercentage, 70, 90);
+  
+  return (
+    <div style={{ padding: '10px' }}>
+      <div style={{ marginBottom: '15px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>CPU Temp</span>
+          <span style={{ color: cpuTempColor, fontWeight: 'bold' }}>
+            {systemInfo.cpuTemp}°C
+          </span>
+        </div>
+        <div style={{ 
+          width: '100%', 
+          height: '4px', 
+          backgroundColor: '#333',
+          borderRadius: '2px',
+          marginTop: '5px'
+        }}>
+          <div style={{ 
+            width: `${(systemInfo.cpuTemp - 30) / 70 * 100}%`,
+            height: '100%',
+            backgroundColor: cpuTempColor,
+            borderRadius: '2px',
+            transition: 'width 0.5s ease, background-color 0.5s ease'
+          }} />
+        </div>
+      </div>
+      
+      <div style={{ marginBottom: '15px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>CPU Usage</span>
+          <span style={{ color: cpuUsageColor, fontWeight: 'bold' }}>
+            {systemInfo.cpuUsage}%
+          </span>
+        </div>
+        <div style={{ 
+          width: '100%', 
+          height: '4px', 
+          backgroundColor: '#333',
+          borderRadius: '2px',
+          marginTop: '5px'
+        }}>
+          <div style={{ 
+            width: `${systemInfo.cpuUsage}%`,
+            height: '100%',
+            backgroundColor: cpuUsageColor,
+            borderRadius: '2px',
+            transition: 'width 0.5s ease, background-color 0.5s ease'
+          }} />
+        </div>
+      </div>
+      
+      <div style={{ marginBottom: '15px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>Memory</span>
+          <span style={{ color: memoryColor, fontWeight: 'bold' }}>
+            {systemInfo.memoryUsage} MB / {systemInfo.totalMemory} MB
+          </span>
+        </div>
+        <div style={{ 
+          width: '100%', 
+          height: '4px', 
+          backgroundColor: '#333',
+          borderRadius: '2px',
+          marginTop: '5px'
+        }}>
+          <div style={{ 
+            width: `${memoryPercentage}%`,
+            height: '100%',
+            backgroundColor: memoryColor,
+            borderRadius: '2px',
+            transition: 'width 0.5s ease, background-color 0.5s ease'
+          }} />
+        </div>
+      </div>
+      
+      <div style={{ marginBottom: '15px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>Disk Usage</span>
+          <span style={{ color: diskColor, fontWeight: 'bold' }}>
+            {systemInfo.diskUsage} GB / {systemInfo.totalDisk} GB
+          </span>
+        </div>
+        <div style={{ 
+          width: '100%', 
+          height: '4px', 
+          backgroundColor: '#333',
+          borderRadius: '2px',
+          marginTop: '5px'
+        }}>
+          <div style={{ 
+            width: `${diskPercentage}%`,
+            height: '100%',
+            backgroundColor: diskColor,
+            borderRadius: '2px',
+            transition: 'width 0.5s ease, background-color 0.5s ease'
+          }} />
+        </div>
+      </div>
+      
+      <div>
+        <span>Uptime: {systemInfo.uptime} hours</span>
+      </div>
+    </div>
+  );
+};
+
+module.exports = {
+  name: 'System Info',
+  description: 'Shows Raspberry Pi system information',
+  component: SystemInfo,
+  version: '1.0.0',
+  author: 'VanController Team'
+};
+</file>
+
+<file path="src/ui/components/Button.js">
+import React from 'react';
+
+const Button = ({ children, primary = true, disabled = false, onClick, className = '', ...props }) => {
+  const buttonStyle = {
+    backgroundColor: primary ? 'var(--primary-color)' : 'var(--secondary-color)',
+    opacity: disabled ? 0.6 : 1,
+  };
+
+  return (
+    <button
+      style={buttonStyle}
+      disabled={disabled}
+      onClick={onClick}
+      className={`button ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+export default Button;
+</file>
+
+<file path="src/ui/components/Card.js">
+import React from 'react';
+
+const Card = ({ children, title, className = '', ...props }) => {
+  return (
+    <div className={`card ${className}`} {...props}>
+      {title && <h3 className="card-title">{title}</h3>}
+      <div className="card-content">
+        {children}
+      </div>
+    </div>
+  );
+};
+
+export default Card;
+</file>
+
+<file path="src/ui/components/Clock.js">
+import React, { useState, useEffect } from 'react';
+
+const Clock = () => {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  return (
+    <div className="clock">
+      <div className="time">{time.toLocaleTimeString()}</div>
+      <div className="date">{time.toLocaleDateString()}</div>
+    </div>
+  );
+};
+
+export default Clock;
+</file>
+
+<file path="src/ui/components/ExtensionCard.js">
+import React from 'react';
+import Card from './Card';
+
+const ExtensionCard = ({ extension }) => {
+  const ExtComponent = extension.component;
+
+  return (
+    <Card 
+      title={extension.name}
+      className="extension-card"
+    >
+      <div className="extension-meta">
+        <span className="extension-version">v{extension.version}</span>
+        <span className="extension-author">by {extension.author}</span>
+      </div>
+      <div className="extension-content">
+        <ExtComponent />
+      </div>
+    </Card>
+  );
+};
+
+export default ExtensionCard;
+</file>
+
+<file path="src/ui/components/ThemeSelector.js">
+import React, { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
+
+const ThemeSelector = () => {
+  const { currentTheme, changeTheme, themes } = useContext(ThemeContext);
+  
+  return (
+    <div>
+      <h3>Select Theme</h3>
+      <div style={{ 
+        display: 'flex', 
+        flexWrap: 'wrap',
+        gap: '10px',
+        marginTop: '15px'
+      }}>
+        {Object.entries(themes).map(([key, theme]) => (
+          <div
+            key={key}
+            onClick={() => changeTheme(key)}
+            style={{
+              width: '100px',
+              height: '70px',
+              backgroundColor: theme.colors.background,
+              borderRadius: '8px',
+              padding: '8px',
+              border: currentTheme.name === theme.name ? `2px solid ${theme.colors.primary}` : '1px solid #555',
+              cursor: 'pointer',
+              overflow: 'hidden'
+            }}
+          >
+            <div style={{
+              width: '100%',
+              height: '20px',
+              backgroundColor: theme.colors.primary,
+              borderRadius: '4px',
+              marginBottom: '8px'
+            }} />
+            <div style={{
+              width: '80%',
+              height: '15px',
+              backgroundColor: theme.colors.surface,
+              borderRadius: '4px'
+            }} />
+            <div style={{
+              color: theme.colors.text,
+              fontSize: '10px',
+              marginTop: '5px',
+              textAlign: 'center',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
+            }}>
+              {theme.name}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default ThemeSelector;
+</file>
+
+<file path="src/ui/contexts/ThemeContext.js">
+import React, { createContext, useState } from 'react';
+
+const themes = {
+  dark: {
+    name: 'Dark Theme',
+    colors: {
+      primary: '#4CAF50',
+      secondary: '#2196F3',
+      background: '#121212',
+      surface: '#1e1e1e',
+      surfaceLight: '#2a2a2a',
+      text: '#ffffff',
+      textSecondary: '#aaaaaa',
+    }
+  }
+};
+
+// Create context
+export const ThemeContext = createContext();
+
+export const ThemeProvider = ({ children }) => {
+  const [currentTheme, setCurrentTheme] = useState(themes.dark);
+  
+  // Change the theme
+  const changeTheme = (themeKey) => {
+    if (themes[themeKey]) {
+      setCurrentTheme(themes[themeKey]);
+    }
+  };
+  
+  return (
+    <ThemeContext.Provider value={{ currentTheme, changeTheme, themes }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+</file>
+
+<file path="src/ui/screens/HomeScreen.js">
+import React from 'react';
+import Clock from '../components/Clock';
+import ExtensionCard from '../components/ExtensionCard';
+import Button from '../components/Button';
+
+const HomeScreen = ({ extensions = {}, onSettings }) => {
+  return (
+    <div className="container">
+      <header className="header">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h1>Van Controller</h1>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Clock />
+            <Button 
+              onClick={onSettings}
+              style={{ marginLeft: '15px' }}
+            >
+              Settings
+            </Button>
+          </div>
+        </div>
+      </header>
+      
+      <main className="main">
+        <div className="grid">
+          {Object.keys(extensions).length > 0 ? (
+            Object.values(extensions).map((extension, index) => (
+              <ExtensionCard key={index} extension={extension} />
+            ))
+          ) : (
+            <div className="card empty-state">
+              <p>No extensions installed yet.</p>
+              <p>Extensions provide functionality to control your campervan's systems.</p>
+              <Button 
+                onClick={onSettings}
+                style={{ marginTop: '15px' }}
+              >
+                Install Extensions
+              </Button>
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default HomeScreen;
+</file>
+
+<file path="src/ui/screens/SettingsScreen.js">
+import React, { useState } from 'react';
+import Button from '../components/Button';
+import ThemeSelector from '../components/ThemeSelector';
+
+const { remote, ipcRenderer } = window.require('electron');
+const { dialog } = remote;
+
+const SettingsScreen = ({ extensions, onBack, onReload }) => {
+  const [selectedExtension, setSelectedExtension] = useState(null);
+
+  const handleInstallExtension = async () => {
+    const result = await dialog.showOpenDialog({
+      properties: ['openDirectory'],
+      title: 'Select Extension Directory'
+    });
+
+    if (!result.canceled && result.filePaths.length > 0) {
+      const success = await ipcRenderer.invoke('install-extension', result.filePaths[0]);
+      
+      if (success) {
+        alert('Extension installed successfully! Reloading extensions...');
+        if (onReload) onReload();
+      } else {
+        alert('Failed to install extension. Check the logs for more information.');
+      }
+    }
+  };
+
+  const handleUninstallExtension = async () => {
+    if (!selectedExtension) return;
+    
+    if (window.confirm(`Are you sure you want to uninstall the "${extensions[selectedExtension].name}" extension?`)) {
+      const success = await ipcRenderer.invoke('uninstall-extension', selectedExtension);
+      
+      if (success) {
+        alert('Extension uninstalled successfully! Reloading extensions...');
+        setSelectedExtension(null);
+        if (onReload) onReload();
+      } else {
+        alert('Failed to uninstall extension. Check the logs for more information.');
+      }
+    }
+  };
+
+  const handleResetSetup = async () => {
+    if (window.confirm('Are you sure you want to reset the setup? This will delete your configuration and restart the setup process.')) {
+      const success = await ipcRenderer.invoke('reset-setup');
+      
+      if (success) {
+        alert('Setup reset successfully! The application will now restart.');
+        remote.app.relaunch();
+        remote.app.exit(0);
+      } else {
+        alert('Failed to reset setup. Check the logs for more information.');
+      }
+    }
+  };
+
+  return (
+    <div className="container">
+      <header className="header">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h1>Settings</h1>
+          <Button onClick={onBack}>Back to Dashboard</Button>
+        </div>
+      </header>
+      
+      <main className="main" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="card">
+          <h2>Appearance</h2>
+          <ThemeSelector />
+        </div>
+        
+        <div className="card">
+          <h2>Extensions</h2>
+          
+          <div style={{ margin: '20px 0' }}>
+            <Button onClick={handleInstallExtension}>Install Extension</Button>
+          </div>
+          
+          <div style={{ marginBottom: '20px' }}>
+            <h3>Installed Extensions</h3>
+            <ul style={{ 
+              listStyle: 'none',
+              padding: 0,
+              margin: '10px 0',
+              maxHeight: '200px',
+              overflowY: 'auto'
+            }}>
+              {Object.keys(extensions).length > 0 ? (
+                Object.entries(extensions).map(([id, ext]) => (
+                  <li 
+                    key={id}
+                    onClick={() => setSelectedExtension(id)}
+                    style={{ 
+                      padding: '10px',
+                      marginBottom: '5px',
+                      backgroundColor: selectedExtension === id ? 'var(--surface-light)' : 'var(--surface)',
+                      borderRadius: '5px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span>{ext.name}</span>
+                      <span>v{ext.version}</span>
+                    </div>
+                    <div style={{ 
+                      fontSize: '0.8rem',
+                      color: 'var(--text-secondary)'
+                    }}>
+                      {ext.description}
+                    </div>
+                    <div style={{ 
+                      fontSize: '0.8rem',
+                      color: 'var(--text-secondary)',
+                      fontStyle: 'italic'
+                    }}>
+                      by {ext.author}
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <li style={{ padding: '10px' }}>
+                  No extensions installed
+                </li>
+              )}
+            </ul>
+            
+            {selectedExtension && (
+              <Button 
+                primary={false} 
+                onClick={handleUninstallExtension}
+              >
+                Uninstall Selected Extension
+              </Button>
+            )}
+          </div>
+        </div>
+        
+        <div className="card">
+          <h2>System</h2>
+          
+          <div style={{ margin: '20px 0' }}>
+            <h3>Reset Setup</h3>
+            <p style={{ margin: '10px 0' }}>
+              This will delete your configuration and restart the setup process.
+            </p>
+            <Button 
+              primary={false}
+              onClick={handleResetSetup}
+            >
+              Reset Setup
+            </Button>
+          </div>
+          
+          <div style={{ margin: '20px 0' }}>
+            <h3>About</h3>
+            <p style={{ margin: '10px 0' }}>
+              VanController v0.1.0
+            </p>
+            <p style={{ margin: '10px 0' }}>
+              A Raspberry Pi-based touch screen controller for campervan electronics.
+            </p>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default SettingsScreen;
+</file>
+
+<file path="src/ui/screens/SetupScreen.js">
+import React, { useState } from 'react';
+import Button from '../components/Button';
+
+const SetupScreen = ({ questions = [], onComplete }) => {
+  const [answers, setAnswers] = useState({});
+  const [currentStep, setCurrentStep] = useState(0);
+  
+  // Group questions into logical steps (max 3 questions per step)
+  const steps = [];
+  for (let i = 0; i < questions.length; i += 3) {
+    steps.push(questions.slice(i, i + 3));
+  }
+
+  const handleInputChange = (questionId, value) => {
+    setAnswers(prev => ({
+      ...prev,
+      [questionId]: value
+    }));
+  };
+
+  const handleSubmit = () => {
+    onComplete(answers);
+  };
+
+  const nextStep = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const isStepComplete = () => {
+    const currentQuestions = steps[currentStep] || [];
+    return !currentQuestions
+      .filter(q => q.required)
+      .some(q => !answers[q.id]);
+  };
+
+  const isLastStep = currentStep === steps.length - 1;
+  const currentQuestions = steps[currentStep] || [];
+
+  return (
+    <div className="container setup-screen">
+      <div className="setup-content">
+        <h1>Welcome to Van Controller</h1>
+        <p>Let's set up your system. Step {currentStep + 1} of {steps.length}</p>
+        
+        <div className="progress-bar">
+          <div 
+            className="progress-fill" 
+            style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+          ></div>
+        </div>
+        
+        <div className="setup-form">
+          {currentQuestions.map((question) => (
+            <div key={question.id} className="form-group">
+              <label>{question.label}: </label>
+              
+              {question.type === 'text' && (
+                <input 
+                  type="text"
+                  value={answers[question.id] || ''}
+                  onChange={(e) => handleInputChange(question.id, e.target.value)}
+                />
+              )}
+              
+              {question.type === 'number' && (
+                <input 
+                  type="number"
+                  min={question.min}
+                  max={question.max}
+                  value={answers[question.id] || ''}
+                  onChange={(e) => handleInputChange(question.id, parseInt(e.target.value))}
+                />
+              )}
+              
+              {question.type === 'select' && (
+                <select 
+                  value={answers[question.id] || ''}
+                  onChange={(e) => handleInputChange(question.id, e.target.value)}
+                >
+                  <option value="">-- Select --</option>
+                  {question.options.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              )}
+              
+              {question.type === 'boolean' && (
+                <div className="radio-group">
+                  <label className="radio-label">
+                    <input 
+                      type="radio"
+                      name={question.id}
+                      value="true"
+                      checked={answers[question.id] === true}
+                      onChange={() => handleInputChange(question.id, true)}
+                    /> Yes
+                  </label>
+                  <label className="radio-label">
+                    <input 
+                      type="radio"
+                      name={question.id}
+                      value="false"
+                      checked={answers[question.id] === false}
+                      onChange={() => handleInputChange(question.id, false)}
+                    /> No
+                  </label>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        
+        <div className="button-group">
+          {currentStep > 0 && (
+            <Button 
+              primary={false}
+              onClick={prevStep}
+            >
+              Previous
+            </Button>
+          )}
+          
+          {!isLastStep ? (
+            <Button 
+              onClick={nextStep}
+              disabled={!isStepComplete()}
+            >
+              Next
+            </Button>
+          ) : (
+            <Button 
+              onClick={handleSubmit}
+              disabled={!isStepComplete()}
+            >
+              Complete Setup
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SetupScreen;
+</file>
+
+<file path="src/ui/styles/global.css">
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: #121212;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+</file>
+
+<file path="src/ui/styles/themes.js">
+const themes = {
+    dark: {
+      name: 'Dark Theme',
+      colors: {
+        primary: '#4CAF50',
+        secondary: '#2196F3',
+        background: '#121212',
+        surface: '#1e1e1e',
+        surfaceLight: '#2a2a2a',
+        text: '#ffffff',
+        textSecondary: '#aaaaaa',
+      }
+    },
+    blue: {
+      name: 'Blue Theme',
+      colors: {
+        primary: '#2196F3',
+        secondary: '#03A9F4',
+        background: '#0A1929',
+        surface: '#132F4C',
+        surfaceLight: '#173A5E',
+        text: '#ffffff',
+        textSecondary: '#B2BAC2',
+      }
+    },
+    sunset: {
+      name: 'Sunset Theme',
+      colors: {
+        primary: '#FF5722',
+        secondary: '#FF9800',
+        background: '#212121',
+        surface: '#2C2C2C',
+        surfaceLight: '#383838',
+        text: '#ffffff',
+        textSecondary: '#CCCCCC',
+      }
+    }
+  };
+  
+  export default themes;
+</file>
+
+<file path="src/ui/styles/touch.css">
+/* Touch-optimized styles */
+
+button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  margin: 5px;
+  border-radius: 8px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+select {
+  height: 44px;
+  font-size: 1rem;
+  padding: 0 10px;
+  margin: 5px 0;
+}
+</file>
+
+<file path="src/ui/index.html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Van Controller</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>
+</file>
+
+<file path=".babelrc">
+{
+  "presets": ["@babel/preset-env", "@babel/preset-react"]
+}
+</file>
+
+<file path=".gitignore">
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+
+# Build files
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# macOS specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+logs
+*.log
+</file>
+
+<file path="scripts/install.sh">
+#!/bin/bash
+
+# VanController Installer for Raspberry Pi
+set -e
+
+echo "===================================="
+echo "   VanController Installer"
+echo "===================================="
+
+# Check if running as root
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Please run as root or with sudo"
+  exit 1
+fi
+
+echo "Updating system packages..."
+apt update
+apt upgrade -y
+
+echo "Installing dependencies..."
+apt install -y git nodejs npm chromium-browser xserver-xorg x11-xserver-utils xinit unclutter libcap2-bin wiringpi
+
+# Check if Node.js is installed correctly
+NODE_VERSION=$(node -v 2>/dev/null || echo "Node.js not found")
+echo "Node.js version: $NODE_VERSION"
+
+if [[ ! $NODE_VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "Installing Node.js from NodeSource..."
+  curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+  apt install -y nodejs
+fi
+
+# Create installation directory
+echo "Creating installation directory..."
+INSTALL_DIR="/opt/vancontroller"
+mkdir -p "$INSTALL_DIR"
+
+# Clone or download the repository
+echo "Downloading VanController..."
+if [ -d "/tmp/VanController" ]; then
+  rm -rf "/tmp/VanController"
+fi
+
+git clone https://github.com/JagoFletch/VanController.git /tmp/VanController
+cp -r /tmp/VanController/* "$INSTALL_DIR/"
+rm -rf /tmp/VanController
+
+# Set permissions
+echo "Setting permissions..."
+chown -R pi:pi "$INSTALL_DIR"
+chmod +x "$INSTALL_DIR/scripts/"*.sh
+
+# Install dependencies and build
+echo "Installing Node.js dependencies..."
+cd "$INSTALL_DIR"
+su pi -c "npm install"
+
+echo "Building application..."
+su pi -c "npm run build:pi"
+
+# Set up autostart for kiosk mode
+echo "Setting up autostart..."
+mkdir -p /home/pi/.config/autostart
+cat > /home/pi/.config/autostart/vancontroller.desktop << EOL
+[Desktop Entry]
+Type=Application
+Name=VanController
+Comment=VanController for Raspberry Pi
+Exec=/opt/vancontroller/scripts/start.sh
+X-GNOME-Autostart-enabled=true
+EOL
+
+# Create start script
+cat > "$INSTALL_DIR/scripts/start.sh" << EOL
+#!/bin/bash
+# Start VanController in kiosk mode
+export DISPLAY=:0
+/usr/bin/electron /opt/vancontroller/src/main.js
+EOL
+chmod +x "$INSTALL_DIR/scripts/start.sh"
+
+# Allow electron to run without root
+setcap cap_net_bind_service=+ep /usr/bin/electron
+
+# Create a desktop shortcut
+cat > /home/pi/Desktop/VanController.desktop << EOL
+[Desktop Entry]
+Type=Application
+Name=VanController
+Comment=VanController for Raspberry Pi
+Exec=/opt/vancontroller/scripts/start.sh
+Icon=/opt/vancontroller/assets/icon.svg
+Terminal=false
+Categories=Utility;
+EOL
+chmod +x /home/pi/Desktop/VanController.desktop
+
+# Create a service file for automatic startup
+cat > /etc/systemd/system/vancontroller.service << EOL
+[Unit]
+Description=VanController Service
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+Environment=DISPLAY=:0
+WorkingDirectory=/opt/vancontroller
+ExecStart=/opt/vancontroller/scripts/start.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOL
+
+# Enable and start the service
+systemctl daemon-reload
+systemctl enable vancontroller.service
+
+echo "===================================="
+echo "   Installation Complete!"
+echo "===================================="
+echo "VanController has been installed to: $INSTALL_DIR"
+echo "It will automatically start when your Raspberry Pi boots."
+echo "To start it manually, run: systemctl start vancontroller"
+echo "To see the status, run: systemctl status vancontroller"
+echo "To restart it, run: systemctl restart vancontroller"
+echo "To stop it, run: systemctl stop vancontroller"
+
+# Ask if user wants to reboot now
+read -p "Do you want to reboot now to start VanController? (y/n) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  echo "Rebooting..."
+  reboot
+fi
+
+exit 0
+</file>
+
+<file path="src/ui/App.js">
+import React, { useState, useEffect } from 'react';
+import { ThemeContext } from './contexts/ThemeContext';
+
+const { remote, ipcRenderer } = window.require ? window.require('electron') : { remote: null, ipcRenderer: null };
+
+const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    // Simple loading simulation for development
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        backgroundColor: '#121212',
+        color: 'white'
+      }}>
+        <h2>Loading Van Controller...</h2>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ 
+      padding: '20px',
+      backgroundColor: '#121212',
+      color: 'white',
+      height: '100vh',
+      boxSizing: 'border-box'
+    }}>
+      <header style={{ marginBottom: '20px' }}>
+        <h1>Van Controller</h1>
+        <div>
+          {new Date().toLocaleTimeString()} - {new Date().toLocaleDateString()}
+        </div>
+      </header>
+      
+      <main>
+        <div style={{ 
+          backgroundColor: '#1e1e1e',
+          padding: '20px',
+          borderRadius: '10px',
+          marginBottom: '20px'
+        }}>
+          <h2>Welcome to Van Controller</h2>
+          <p>
+            This is a development preview. The full application is being set up.
+          </p>
+        </div>
+        
+        <div style={{ 
+          backgroundColor: '#1e1e1e',
+          padding: '20px',
+          borderRadius: '10px'
+        }}>
+          <h2>Extensions</h2>
+          <p>No extensions loaded yet.</p>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default App;
+</file>
+
+<file path="src/ui/index.js">
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import './styles/global.css';
+import './styles/touch.css';
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+);
+</file>
+
+<file path="src/main.js">
+const { app, BrowserWindow, ipcMain } = require('electron');
+const path = require('path');
+const isDev = require('electron-is-dev');
+const { initialize, enable } = require('@electron/remote/main');
+
+// Import managers
+const extensionManager = require('./core/extensionManager');
+const setupManager = require('./core/setupManager');
+const logger = require('./core/utils/logger');
+
+// Initialize @electron/remote
+initialize();
+
+let mainWindow;
+
+function createWindow() {
+  logger.info('Creating main window');
+  
+  // Create the browser window
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 480, // Common resolution for Raspberry Pi touch screens
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
+    },
+    fullscreen: !isDev, // Fullscreen in production (Kiosk mode)
+    autoHideMenuBar: !isDev // Hide menu bar in production
+  });
+
+  enable(mainWindow.webContents);
+
+  // Load the index.html
+  mainWindow.loadURL(
+    isDev
+      ? 'http://localhost:3000'
+      : `file://${path.join(__dirname, '../dist/index.html')}`
+  );
+
+  // Open the DevTools in development mode
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
+  
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+  
+  logger.info('Main window created');
+}
+
+// Create window when Electron is ready
+app.whenReady().then(() => {
+  createWindow();
+  
+  // Set up IPC handlers
+  setupIpcHandlers();
+});
+
+// Quit when all windows are closed, except on macOS
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    logger.info('All windows closed, quitting application');
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+
+// Set up IPC handlers for communication with the renderer process
+function setupIpcHandlers() {
+  // Extension management
+  ipcMain.handle('get-extensions', () => {
+    return extensionManager.getExtensions();
+  });
+  
+  ipcMain.handle('install-extension', (event, sourcePath) => {
+    return extensionManager.installExtension(sourcePath);
+  });
+  
+  ipcMain.handle('uninstall-extension', (event, extensionName) => {
+    return extensionManager.uninstallExtension(extensionName);
+  });
+  
+  // Setup management
+  ipcMain.handle('get-setup-questions', () => {
+    return setupManager.getSetupQuestions();
+  });
+  
+  ipcMain.handle('save-user-config', (event, config) => {
+    return setupManager.saveUserConfig(config);
+  });
+  
+  ipcMain.handle('get-user-config', () => {
+    return setupManager.getUserConfig();
+  });
+  
+  ipcMain.handle('is-setup-completed', () => {
+    return setupManager.isSetupCompleted();
+  });
+  
+  ipcMain.handle('reset-setup', () => {
+    return setupManager.resetSetup();
+  });
+  
+  logger.info('IPC handlers set up');
+}
+</file>
+
+<file path="package.json">
+{
+  "name": "van-controller",
+  "version": "0.1.0",
+  "description": "Raspberry Pi touch screen controller for campervan electronics",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "concurrently \"webpack serve --mode development\" \"wait-on http://localhost:3000 && electron .\"",
+    "build": "webpack --mode production && electron-builder",
+    "build:pi": "webpack --mode production && electron-builder --linux"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron-is-dev": "^2.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "@babel/preset-react": "^7.22.5",
+    "@electron/remote": "^2.0.10",
+    "babel-loader": "^9.1.2",
+    "concurrently": "^8.2.0",
+    "cross-env": "^7.0.3",
+    "css-loader": "^6.8.1",
+    "electron": "^25.1.0",
+    "electron-builder": "^24.4.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.5.3",
+    "style-loader": "^3.3.3",
+    "wait-on": "^7.0.1",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  },
+  "build": {
+    "appId": "com.vancontroller.app",
+    "productName": "VanController",
+    "files": [
+      "dist/**/*",
+      "src/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Utility"
+    }
+  }
+}
+</file>
+
+<file path="README.md">
+# VanController
+
+A Raspberry Pi-based touch screen controller for campervan electronics.
+
+## Features
+
+- Beautiful, high-end GUI with support for complex graphics
+- Dynamic loading of extensions for controlling various accessories
+- Customizable themes to personalize your experience
+- First-use setup screen for vehicle configuration
+- Kiosk mode display with time and date
+- User-installable extensions
+- Hardware access for Raspberry Pi GPIO control
+
+## Installation on Raspberry Pi
+
+Run the following command to install VanController on your Raspberry Pi:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/JagoFletch/VanController/main/scripts/install.sh | sudo bash
+
+## Development
+# Prerequisites
+
+Node.js 14 or higher
+npm 6 or higher
+
+# Setup
+
+Clone the repository:
+bashCopygit clone https://github.com/JagoFletch/VanController.git
+cd VanController
+
+Install dependencies:
+bashCopynpm install
+
+Start the development server:
+bashCopynpm run dev
+
+
+Building for Raspberry Pi
+bashCopynpm run build:pi
+Creating Extensions
+Extensions are JavaScript modules that can be loaded dynamically by the VanController.
+Each extension should include:
+
+A name and description
+A React component to render
+Version information
+Author information
+
+Example extension structure:
+Copy/extensions/my-extension/
+  index.js        # Main extension entry point
+  [other files]   # Additional files needed by the extension
+Example index.js:
+javascriptCopyimport React from 'react';
+
+const MyExtension = () => {
+  return (
+    <div>
+      <h2>My Extension</h2>
+      <p>This is a custom extension for VanController.</p>
+      {/* Extension UI elements */}
+    </div>
+  );
+};
+
+module.exports = {
+  name: 'My Extension',
+  description: 'A custom extension for VanController',
+  component: MyExtension,
+  version: '1.0.0',
+  author: 'Your Name'
+};
+See the Extension Development Guide for more details.
+Hardware Support
+VanController supports interfacing with the Raspberry Pi hardware:
+
+GPIO control for digital inputs and outputs
+I2C, SPI, and UART for connected sensors and devices
+
+Theme Customization
+VanController comes with multiple themes that can be selected in the Settings page:
+
+Dark Theme (default)
+Blue Theme
+Sunset Theme
+
+License
+This project is licensed under the MIT License - see the LICENSE file for details.
+Copy
+Now let's commit all of these changes to GitHub:
+
+```bash
+git add .
+git commit -m "Add themes, hardware access, and system information"
+git push origin master
+With these enhancements, your VanController now supports:
+
+Multiple themes with a theme switcher
+Hardware access through GPIO pins
+System information monitoring
+Touch-optimized UI
+Detailed extension documentation
+
+These features make the VanController a more complete solution for campervan control systems, with the ability to extend its functionality through custom extensions.
+</file>
+
+<file path="webpack.config.js">
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  entry: './src/ui/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader'
+        }
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
+      }
+    ]
+  },
+  resolve: {
+    extensions: ['.js', '.jsx']
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/ui/index.html'
+    })
+  ],
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'dist')
+    },
+    port: 3000,
+    hot: true
+  }
+};
+</file>
+
+</files>

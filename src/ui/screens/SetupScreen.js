@@ -3,13 +3,32 @@ import Button from '../components/Button';
 
 const SetupScreen = ({ questions = [], onComplete }) => {
   const [answers, setAnswers] = useState({});
-  const [currentStep, setCurrentStep] = useState(0);
   
-  // Group questions into logical steps (max 3 questions per step)
-  const steps = [];
-  for (let i = 0; i < questions.length; i += 3) {
-    steps.push(questions.slice(i, i + 3));
-  }
+  // Sample questions for development
+  const sampleQuestions = [
+    {
+      id: "vehicleMake",
+      label: "Vehicle Make",
+      type: "text",
+      required: true
+    },
+    {
+      id: "vehicleModel",
+      label: "Vehicle Model",
+      type: "text",
+      required: true
+    },
+    {
+      id: "vehicleYear",
+      label: "Year",
+      type: "number",
+      min: 1950,
+      max: 2030,
+      required: true
+    }
+  ];
+  
+  const displayQuestions = questions.length > 0 ? questions : sampleQuestions;
 
   const handleInputChange = (questionId, value) => {
     setAnswers(prev => ({
@@ -22,51 +41,51 @@ const SetupScreen = ({ questions = [], onComplete }) => {
     onComplete(answers);
   };
 
-  const nextStep = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const prevStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const isStepComplete = () => {
-    const currentQuestions = steps[currentStep] || [];
-    return !currentQuestions
+  const isCompleteDisabled = () => {
+    return displayQuestions
       .filter(q => q.required)
       .some(q => !answers[q.id]);
   };
 
-  const isLastStep = currentStep === steps.length - 1;
-  const currentQuestions = steps[currentStep] || [];
-
   return (
-    <div className="container setup-screen">
-      <div className="setup-content">
-        <h1>Welcome to Van Controller</h1>
-        <p>Let's set up your system. Step {currentStep + 1} of {steps.length}</p>
+    <div style={{ 
+      padding: '20px',
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      <div style={{ 
+        maxWidth: '600px',
+        width: '100%',
+        backgroundColor: '#1e1e1e',
+        borderRadius: '10px',
+        padding: '30px'
+      }}>
+        <h1 style={{ marginBottom: '20px' }}>Welcome to Van Controller</h1>
+        <p style={{ marginBottom: '30px' }}>Let's set up your system.</p>
         
-        <div className="progress-bar">
-          <div 
-            className="progress-fill" 
-            style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-          ></div>
-        </div>
-        
-        <div className="setup-form">
-          {currentQuestions.map((question) => (
-            <div key={question.id} className="form-group">
-              <label>{question.label}: </label>
+        <div style={{ marginBottom: '30px' }}>
+          {displayQuestions.map((question) => (
+            <div key={question.id} style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px' }}>
+                {question.label}:
+              </label>
               
               {question.type === 'text' && (
                 <input 
                   type="text"
                   value={answers[question.id] || ''}
                   onChange={(e) => handleInputChange(question.id, e.target.value)}
+                  style={{ 
+                    width: '100%',
+                    padding: '8px',
+                    borderRadius: '5px',
+                    border: '1px solid #444',
+                    backgroundColor: '#333',
+                    color: 'white'
+                  }}
                 />
               )}
               
@@ -76,76 +95,28 @@ const SetupScreen = ({ questions = [], onComplete }) => {
                   min={question.min}
                   max={question.max}
                   value={answers[question.id] || ''}
-                  onChange={(e) => handleInputChange(question.id, parseInt(e.target.value))}
+                  onChange={(e) => handleInputChange(question.id, e.target.value ? parseInt(e.target.value) : '')}
+                  style={{ 
+                    width: '100%',
+                    padding: '8px',
+                    borderRadius: '5px',
+                    border: '1px solid #444',
+                    backgroundColor: '#333',
+                    color: 'white'
+                  }}
                 />
-              )}
-              
-              {question.type === 'select' && (
-                <select 
-                  value={answers[question.id] || ''}
-                  onChange={(e) => handleInputChange(question.id, e.target.value)}
-                >
-                  <option value="">-- Select --</option>
-                  {question.options.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              )}
-              
-              {question.type === 'boolean' && (
-                <div className="radio-group">
-                  <label className="radio-label">
-                    <input 
-                      type="radio"
-                      name={question.id}
-                      value="true"
-                      checked={answers[question.id] === true}
-                      onChange={() => handleInputChange(question.id, true)}
-                    /> Yes
-                  </label>
-                  <label className="radio-label">
-                    <input 
-                      type="radio"
-                      name={question.id}
-                      value="false"
-                      checked={answers[question.id] === false}
-                      onChange={() => handleInputChange(question.id, false)}
-                    /> No
-                  </label>
-                </div>
               )}
             </div>
           ))}
         </div>
         
-        <div className="button-group">
-          {currentStep > 0 && (
-            <Button 
-              primary={false}
-              onClick={prevStep}
-            >
-              Previous
-            </Button>
-          )}
-          
-          {!isLastStep ? (
-            <Button 
-              onClick={nextStep}
-              disabled={!isStepComplete()}
-            >
-              Next
-            </Button>
-          ) : (
-            <Button 
-              onClick={handleSubmit}
-              disabled={!isStepComplete()}
-            >
-              Complete Setup
-            </Button>
-          )}
-        </div>
+        <Button 
+          onClick={handleSubmit}
+          disabled={isCompleteDisabled()}
+          style={{ width: '100%' }}
+        >
+          Complete Setup
+        </Button>
       </div>
     </div>
   );

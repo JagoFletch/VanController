@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/global.css';
-import HomeScreen from '../screens/HomeScreen';
-import SetupScreen from '../screens/SetupScreen';
-import SettingsScreen from '../screens/SettingsScreen';
-
-const { remote, ipcRenderer } = window.require('electron');
+import './styles/global.css';
+import './styles/touch.css';
+import HomeScreen from './screens/HomeScreen';
+import SetupScreen from './screens/SetupScreen';
+import SettingsScreen from './screens/SettingsScreen';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 const App = () => {
   const [isFirstUse, setIsFirstUse] = useState(false);
@@ -14,48 +14,66 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentScreen, setCurrentScreen] = useState('home'); // 'home', 'settings'
 
-  // Load application data
-  const loadAppData = async () => {
-    setIsLoading(true);
-
-    try {
-      // Check if this is the first use
-      const setupCompleted = await ipcRenderer.invoke('is-setup-completed');
-      setIsFirstUse(!setupCompleted);
-
-      // Load setup questions
-      const questions = await ipcRenderer.invoke('get-setup-questions');
-      setSetupQuestions(questions);
-
-      // If setup is completed, load user config
-      if (setupCompleted) {
-        const config = await ipcRenderer.invoke('get-user-config');
-        setUserConfig(config || {});
-      }
-
-      // Load all extensions
-      const loadedExtensions = await ipcRenderer.invoke('get-extensions');
-      setExtensions(loadedExtensions || {});
-    } catch (error) {
-      console.error('Error initializing app:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  // Simulate loading
   useEffect(() => {
-    loadAppData();
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
   }, []);
 
-  const handleSetupComplete = async (config) => {
-    const success = await ipcRenderer.invoke('save-user-config', config);
+  // Load example extensions (for development)
+  useEffect(() => {
+    // In a real app, this would load from extensionManager
+    const demoExtensions = {
+      'system-info': {
+        name: 'System Info',
+        description: 'Shows Raspberry Pi system information',
+        component: () => (
+          <div style={{ padding: '10px' }}>
+            <h3>System Information</h3>
+            <p>CPU Temperature: 45.2°C</p>
+            <p>Memory Usage: 512MB / 1024MB</p>
+            <p>Uptime: 3.5 hours</p>
+          </div>
+        ),
+        version: '1.0.0',
+        author: 'VanController Team'
+      },
+      'clock': {
+        name: 'Digital Clock',
+        description: 'Shows a digital clock with date',
+        component: () => {
+          const [time, setTime] = useState(new Date());
+          
+          useEffect(() => {
+            const timer = setInterval(() => {
+              setTime(new Date());
+            }, 1000);
+            return () => clearInterval(timer);
+          }, []);
+          
+          return (
+            <div style={{ textAlign: 'center', padding: '15px' }}>
+              <h3>Digital Clock</h3>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>
+                {time.toLocaleTimeString()}
+              </div>
+              <div>{time.toLocaleDateString()}</div>
+            </div>
+          );
+        },
+        version: '1.0.0',
+        author: 'VanController Team'
+      }
+    };
     
-    if (success) {
-      setUserConfig(config);
-      setIsFirstUse(false);
-    } else {
-      alert('Failed to save configuration. Please try again.');
-    }
+    setExtensions(demoExtensions);
+  }, []);
+
+  const handleSetupComplete = (config) => {
+    setUserConfig(config);
+    setIsFirstUse(false);
   };
 
   const handleNavigation = (screen) => {
@@ -64,37 +82,49 @@ const App = () => {
 
   if (isLoading) {
     return (
-      <div className="loading-screen">
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        backgroundColor: '#121212',
+        color: 'white'
+      }}>
         <h2>Loading Van Controller...</h2>
       </div>
     );
   }
 
   if (isFirstUse) {
-    return <SetupScreen 
-      questions={setupQuestions} 
-      onComplete={handleSetupComplete} 
-    />;
+    return (
+      <ThemeProvider>
+        <SetupScreen 
+          questions={setupQuestions} 
+          onComplete={handleSetupComplete} 
+        />
+      </ThemeProvider>
+    );
   }
 
-  switch (currentScreen) {
-    case 'settings':
-      return (
+  return (
+    <ThemeProvider>
+      {currentScreen === 'settings' ? (
         <SettingsScreen 
           extensions={extensions}
           onBack={() => handleNavigation('home')}
-          onReload={loadAppData}
+          onReload={() => {
+            // In a real app, this would reload the extensions
+            console.log('Reloading extensions...');
+          }}
         />
-      );
-    case 'home':
-    default:
-      return (
+      ) : (
         <HomeScreen 
           extensions={extensions}
           onSettings={() => handleNavigation('settings')}
         />
-      );
-  }
+      )}
+    </ThemeProvider>
+  );
 };
 
 export default App;

@@ -14,9 +14,13 @@ const Clock = () => {
   }, []);
 
   return (
-    <div className="clock">
-      <div className="time">{time.toLocaleTimeString()}</div>
-      <div className="date">{time.toLocaleDateString()}</div>
+    <div className="clock" style={{ textAlign: 'center' }}>
+      <div className="time" style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
+        {time.toLocaleTimeString()}
+      </div>
+      <div className="date">
+        {time.toLocaleDateString()}
+      </div>
     </div>
   );
 };

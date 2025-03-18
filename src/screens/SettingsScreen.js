@@ -1,46 +1,84 @@
 import React, { useState } from 'react';
 import Button from '../components/Button';
+import ThemeSelector from '../components/ThemeSelector';
+
+const { remote, ipcRenderer } = window.require('electron');
+const { dialog } = remote;
 
 const SettingsScreen = ({ extensions, onBack, onReload }) => {
   const [selectedExtension, setSelectedExtension] = useState(null);
 
+  const handleInstallExtension = async () => {
+    const result = await dialog.showOpenDialog({
+      properties: ['openDirectory'],
+      title: 'Select Extension Directory'
+    });
+
+    if (!result.canceled && result.filePaths.length > 0) {
+      const success = await ipcRenderer.invoke('install-extension', result.filePaths[0]);
+      
+      if (success) {
+        alert('Extension installed successfully! Reloading extensions...');
+        if (onReload) onReload();
+      } else {
+        alert('Failed to install extension. Check the logs for more information.');
+      }
+    }
+  };
+
+  const handleUninstallExtension = async () => {
+    if (!selectedExtension) return;
+    
+    if (window.confirm(`Are you sure you want to uninstall the "${extensions[selectedExtension].name}" extension?`)) {
+      const success = await ipcRenderer.invoke('uninstall-extension', selectedExtension);
+      
+      if (success) {
+        alert('Extension uninstalled successfully! Reloading extensions...');
+        setSelectedExtension(null);
+        if (onReload) onReload();
+      } else {
+        alert('Failed to uninstall extension. Check the logs for more information.');
+      }
+    }
+  };
+
+  const handleResetSetup = async () => {
+    if (window.confirm('Are you sure you want to reset the setup? This will delete your configuration and restart the setup process.')) {
+      const success = await ipcRenderer.invoke('reset-setup');
+      
+      if (success) {
+        alert('Setup reset successfully! The application will now restart.');
+        remote.app.relaunch();
+        remote.app.exit(0);
+      } else {
+        alert('Failed to reset setup. Check the logs for more information.');
+      }
+    }
+  };
+
   return (
-    <div style={{ 
-      padding: '20px',
-      height: '100vh',
-      boxSizing: 'border-box',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
-      <header style={{ marginBottom: '20px' }}>
+    <div className="container">
+      <header className="header">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h1>Settings</h1>
           <Button onClick={onBack}>Back to Dashboard</Button>
         </div>
       </header>
       
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div style={{ 
-          backgroundColor: '#1e1e1e',
-          borderRadius: '10px',
-          padding: '20px'
-        }}>
+      <main className="main" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="card">
           <h2>Appearance</h2>
-          <p style={{ marginTop: '10px' }}>Theme customization coming soon...</p>
+          <ThemeSelector />
         </div>
         
-        <div style={{ 
-          backgroundColor: '#1e1e1e',
-          borderRadius: '10px',
-          padding: '20px'
-        }}>
+        <div className="card">
           <h2>Extensions</h2>
           
           <div style={{ margin: '20px 0' }}>
-            <Button>Install Extension</Button>
+            <Button onClick={handleInstallExtension}>Install Extension</Button>
           </div>
           
-          <div>
+          <div style={{ marginBottom: '20px' }}>
             <h3>Installed Extensions</h3>
             <ul style={{ 
               listStyle: 'none',
@@ -57,7 +95,7 @@ const SettingsScreen = ({ extensions, onBack, onReload }) => {
                     style={{ 
                       padding: '10px',
                       marginBottom: '5px',
-                      backgroundColor: selectedExtension === id ? '#2a2a2a' : 'transparent',
+                      backgroundColor: selectedExtension === id ? 'var(--surface-light)' : 'var(--surface)',
                       borderRadius: '5px',
                       cursor: 'pointer'
                     }}
@@ -68,13 +106,13 @@ const SettingsScreen = ({ extensions, onBack, onReload }) => {
                     </div>
                     <div style={{ 
                       fontSize: '0.8rem',
-                      color: '#aaa'
+                      color: 'var(--text-secondary)'
                     }}>
                       {ext.description}
                     </div>
                     <div style={{ 
                       fontSize: '0.8rem',
-                      color: '#aaa',
+                      color: 'var(--text-secondary)',
                       fontStyle: 'italic'
                     }}>
                       by {ext.author}
@@ -91,7 +129,7 @@ const SettingsScreen = ({ extensions, onBack, onReload }) => {
             {selectedExtension && (
               <Button 
                 primary={false} 
-                style={{ marginTop: '10px' }}
+                onClick={handleUninstallExtension}
               >
                 Uninstall Selected Extension
               </Button>
@@ -99,11 +137,7 @@ const SettingsScreen = ({ extensions, onBack, onReload }) => {
           </div>
         </div>
         
-        <div style={{ 
-          backgroundColor: '#1e1e1e',
-          borderRadius: '10px',
-          padding: '20px'
-        }}>
+        <div className="card">
           <h2>System</h2>
           
           <div style={{ margin: '20px 0' }}>
@@ -111,7 +145,10 @@ const SettingsScreen = ({ extensions, onBack, onReload }) => {
             <p style={{ margin: '10px 0' }}>
               This will delete your configuration and restart the setup process.
             </p>
-            <Button primary={false}>
+            <Button 
+              primary={false}
+              onClick={handleResetSetup}
+            >
               Reset Setup
             </Button>
           </div>

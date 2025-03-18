@@ -13,10 +13,7 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env', '@babel/preset-react']
-          }
+          loader: 'babel-loader'
         }
       },
       {
@@ -30,7 +27,18 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
+    alias: {
+      // Add aliases for common import paths
+      '@': path.resolve(__dirname, 'src'),
+      '@ui': path.resolve(__dirname, 'src/ui'),
+      '@core': path.resolve(__dirname, 'src/core'),
+      '@extensions': path.resolve(__dirname, 'src/extensions'),
+      '@styles': path.resolve(__dirname, 'src/ui/styles'),
+      '@screens': path.resolve(__dirname, 'src/ui/screens'),
+      '@components': path.resolve(__dirname, 'src/ui/components'),
+      '@contexts': path.resolve(__dirname, 'src/ui/contexts')
+    }
   },
   plugins: [
     new HtmlWebpackPlugin({

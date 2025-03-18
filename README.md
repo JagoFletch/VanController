@@ -18,28 +18,33 @@ Run the following command to install VanController on your Raspberry Pi:
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/JagoFletch/VanController/main/scripts/install.sh | sudo bash
-Development
-Prerequisites
+```
+
+## Development
+# Prerequisites
 
 Node.js 14 or higher
 npm 6 or higher
 
-Setup
+# Setup
 
 Clone the repository:
-bashCopygit clone https://github.com/JagoFletch/VanController.git
+
+``` bash git clone https://github.com/JagoFletch/VanController.git
 cd VanController
+```
 
 Install dependencies:
-bashCopynpm install
+```bash npm install```
 
 Start the development server:
-bashCopynpm run dev
+```bash npm run dev```
 
 
 Building for Raspberry Pi
-bashCopynpm run build:pi
-Creating Extensions
+```bash npm run build:pi```
+
+## Creating Extensions
 Extensions are JavaScript modules that can be loaded dynamically by the VanController.
 Each extension should include:
 
@@ -48,8 +53,8 @@ A React component to render
 Version information
 Author information
 
-Example extension structure:
-Copy/extensions/my-extension/
+# Example extension structure:
+```/extensions/my-extension/
   index.js        # Main extension entry point
   [other files]   # Additional files needed by the extension
 Example index.js:
@@ -72,6 +77,7 @@ module.exports = {
   version: '1.0.0',
   author: 'Your Name'
 };
+```
 See the Extension Development Guide for more details.
 Hardware Support
 VanController supports interfacing with the Raspberry Pi hardware:
