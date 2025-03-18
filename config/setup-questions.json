@@ -1,0 +1,42 @@
+{
+    "questions": [
+      {
+        "id": "vehicleMake",
+        "label": "Vehicle Make",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "vehicleModel",
+        "label": "Vehicle Model",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "vehicleYear",
+        "label": "Year",
+        "type": "number",
+        "min": 1950,
+        "max": 2030,
+        "required": true
+      },
+      {
+        "id": "batteryType",
+        "label": "Main Battery Type",
+        "type": "select",
+        "options": [
+          { "value": "leadAcid", "label": "Lead Acid" },
+          { "value": "agm", "label": "AGM" },
+          { "value": "lithium", "label": "Lithium" },
+          { "value": "other", "label": "Other" }
+        ],
+        "required": true
+      },
+      {
+        "id": "solarInstalled",
+        "label": "Do you have solar panels installed?",
+        "type": "boolean",
+        "required": true
+      }
+    ]
+  }
